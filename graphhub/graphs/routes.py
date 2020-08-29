@@ -4,8 +4,8 @@ from flask_login import current_user, login_required
 
 from graphhub import db
 from graphhub.graphs.forms import GraphForm, CommentForm
+from graphhub.graphs.utils import save_project
 from graphhub.models import Graph, Tag, Comment, Like
-from graphs.utils import save_project
 
 graphs = Blueprint('graphs', __name__)
 
