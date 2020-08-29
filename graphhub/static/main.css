@@ -1,0 +1,42 @@
+body {
+    margin-top: 100px;
+    /*background-color: #cce8ff;*/
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #444444;
+}
+
+.bg-mediumseagreen {
+    background-color: #3CB371;
+}
+
+.top-100 {
+    top: 100px;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    opacity: 0.7 !important;
+}
+
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+.account-img-sm {
+    height: 50px;
+    width: 50px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+.bootstrap-select .filter-option {
+    white-space: normal;
+}

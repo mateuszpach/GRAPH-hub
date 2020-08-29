@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="card border-primary mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h5 class="card-title"><a
+                            href="{{ url_for('graphs.graph', graph_id=graph.id) }}">{{ graph.name }}</a>
+                    </h5>
+                    <h6>
+                        {% for tag in graph.tags %}
+                            <a href="{{ url_for('main.browse', filter_tags=tag.text) }}">#{{ tag.text }}</a>
+                        {% endfor %}
+                    </h6>
+                    <h6 class="text-muted">added {{ graph.date_added.strftime('%Y-%m-%d') }} by
+                        <a href="{{ url_for('main.browse', filter_user=graph.user_id) }}">
+                            {{ graph.author.username }}
+                        </a>
+                    </h6>
+                </div>
+                <div class="col-4 text-right text-muted mt-1">
+                    <i class="fas fa-thumbs-up"></i> {{ nr_likes }}
+                    <i class="fas fa-comment ml-2"></i> {{ nr_comments }}
+                    <i class="fas fa-download ml-2"></i> {{ graph.downloads }}
+                </div>
+            </div>
+
+            <p class="card-text"> {{ graph.description }} </p>
+
+            <div class="row">
+                <div class="col">
+                    {% if liked == 0 %}
+                        <button type="button" class="like btn btn-outline-primary" value="{{ graph.id }}">
+                            <i class="fas fa-thumbs-up mr-2"></i>Like
+                        </button>
+                    {% else %}
+                        <button type="button" class="like btn btn-outline-success" value="{{ graph.id }}">
+                            <i class="fas fa-thumbs-up mr-2"></i>Liked
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="col-4 d-flex justify-content-end">
+                    {% if graph.author == current_user %}
+                        <button type="button" class="btn btn-danger mr-2" data-toggle="modal"
+                                data-target="#deleteModal">Delete
+                        </button>
+                        <a class="btn btn-primary mr-2"
+                           href="{{ url_for('graphs.update_graph', graph_id=graph.id) }}">Update</a>
+                    {% endif %}
+                    <a href="{{ url_for('graphs.graph', graph_id=graph.id) }}/download"
+                       class="btn btn-primary">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <hr>
+            <h5 class="">Comments</h5>
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    {{ form.text.label(class="form-control-label") }}
+                    {% if form.text.errors %}
+                        {{ form.text(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.text.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.text(class="form-control form-control-lg") }}
+                    {% endif %}
+                </fieldset>
+                <div class="form-group d-flex justify-content-end mb-4">
+                    {{ form.submit(class="btn btn-sm btn-primary") }}
+                </div>
+            </form>
+            {% for comment in comments %}
+                <div class="media">
+                    <img class="rounded-circle account-img-sm"
+                         src="{{ url_for('static', filename='profile_pics/' + comment.author.image_file) }}">
+                    <div class="media-body">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="text-muted">
+                                    <a class="mr-2" href="{{ url_for('main.browse', filter_user=comment.user_id) }}">
+                                        {{ comment.author.username }}
+                                    </a>
+                                </h6>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end text-muted">
+                                {{ comment.date_added.strftime('%Y-%m-%d %-H:%I%p') }}
+                            </div>
+                        </div>
+
+                        <p>{{ comment.text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete graph?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="{{ url_for('graphs.delete_graph', graph_id=graph.id) }}" method="POST">
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

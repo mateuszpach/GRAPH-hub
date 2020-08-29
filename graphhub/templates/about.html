@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="card border-primary">
+        <div class="card-body">
+            <legend class="border-bottom mb-4">About GRAPH-hub</legend>
+            <p>GRAPH-hub allows you to browse variety of GRAPH-moment projects created by other users. After
+                registration you can upload your own projects and share them with others. Comment projects and make sure
+                to leave a like reaction under the ones you appreciate.</p>
+            <p>Don't know GRAPH-moment yet? Download it
+                <a href=" {{ url_for('static',filename='graph_moment/GRAPH-moment-1.0.zip') }}" download>here</a>
+                and check how quick you can build and generate random graphs visualisations. Learn more about it on
+                <a href="https://github.com/mateuszpach/GRAPH-moment" download>Github</a>.
+            </p>
+            <p>GRAPH-hub is built by Mateusz Pach. Visit my
+                <a href="https://www.linkedin.com/in/mateusz-pach/" download>LinkedIn</a>
+                and
+                <a href="https://github.com/mateuszpach/" download>Github</a>. Don't hesitate to reach out to me there.
+            </p>
+        </div>
+    </div>
+{% endblock content %}

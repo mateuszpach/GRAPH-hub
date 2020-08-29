@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <!-- content -->
+        <div class="col-md-8">
+            {% for graph in graphs.items %}
+                <article class="card border-primary mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title"><a
+                                        href="{{ url_for('graphs.graph', graph_id=graph.Graph.id) }}">{{ graph.Graph.name }}</a>
+                                </h5>
+                                <h6>
+                                    {% for tag in graph.Graph.tags %}
+                                        <a href="{{ url_for('main.browse', filter_tags=tag.text) }}">#{{ tag.text }}</a>
+                                    {% endfor %}
+                                </h6>
+                                <h6 class="text-muted">added {{ graph.Graph.date_added.strftime('%Y-%m-%d') }} by
+                                    <a href="{{ url_for('main.browse', filter_user=graph.Graph.user_id) }}">
+                                        {{ graph.Graph.author.username }}
+                                    </a>
+                                </h6>
+                            </div>
+                            <div class="col-4 text-right text-muted mt-1">
+                                <i class="fas fa-thumbs-up"></i> {{ graph.nr_likes if graph.nr_likes != None else 0 }}
+                                <i class="fas fa-comment ml-2"></i> {{ graph.nr_comments if graph.nr_comments != None else 0 }}
+                                <i class="fas fa-download ml-2"></i> {{ graph.Graph.downloads }}
+                            </div>
+                        </div>
+
+                        <p class="card-text"> {{ graph.Graph.description }} </p>
+
+                        <div class="row">
+                            <div class="col">
+                                {% if graph.liked == None %}
+                                    <button type="button" class="like btn btn-outline-primary"
+                                            value="{{ graph.Graph.id }}">
+                                        <i class="fas fa-thumbs-up mr-2"></i>Like
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="like btn btn-outline-success"
+                                            value="{{ graph.Graph.id }}">
+                                        <i class="fas fa-thumbs-up mr-2"></i>Liked
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div class="col-4 d-flex justify-content-end">
+                                <a href="{{ url_for('graphs.graph', graph_id=graph.Graph.id) }}/download"
+                                   class="btn btn-primary">
+                                    <i class="fas fa-download mr-2"></i>Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+
+            {% for page_num in graphs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if graphs.page == page_num %}
+                        <a class="btn btn-primary mb-4"
+                           href="{{ url_for('main.browse', page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-outline-primary mb-4"
+                           href="{{ url_for('main.browse', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- sidebar -->
+        <div class="col-md-4">
+            <div class="card border-primary sticky-top top-100">
+                <div class="card-body">
+                    <form action="" method="GET">
+                        <p>Filter by tags</p>
+                        <div class="input-group">
+                            <select id="tags-filter" name="filter_tags" class="selectpicker form-control"
+                                    data-live-search="true"
+                                    title="Select tags" multiple>
+                                {% for tag in tags %}
+                                    {% if tag.text in filter_tags %}
+                                        <option selected>{{ tag.text }}</option>
+                                    {% else %}
+                                        <option>{{ tag.text }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button class="input-group-addon btn btn-danger" id="tags-filter-btn">Clear</button>
+                        </div>
+                        <hr/>
+                        <p>Filter by user</p>
+                        <div class="input-group">
+                            <select id="user-filter" name="filter_user" class="selectpicker form-control"
+                                    data-live-search="true"
+                                    title="Select user">
+                                {% for user in users %}
+                                    {% if user.id == filter_user %}
+                                        <option value="{{ user.id }}" selected>{{ user.username }}</option>
+                                    {% else %}
+                                        <option value="{{ user.id }}">{{ user.username }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button class="input-group-addon btn btn-danger" id="user-filter-btn">Clear</button>
+                        </div>
+                        <hr/>
+                        <p>Order by</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="order_by" id="order-by-radio1"
+                                   value="date_added_desc" {% if order_by == 'date_added_desc' %}checked{% endif %}>
+                            <label class="form-check-label" for="order-by-radio1">
+                                Date added (<i class="fas fa-arrow-down"></i>)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="order_by" id="order-by-radio2"
+                                   value="date_added_asc" {% if order_by == 'date_added_asc' %}checked{% endif %}>
+                            <label class="form-check-label" for="order-by-radio2">
+                                Date added (<i class="fas fa-arrow-up"></i>)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="order_by" id="order-by-radio3"
+                                   value="likes_desc" {% if order_by == 'likes_desc' %}checked{% endif %}>
+                            <label class="form-check-label" for="order-by-radio3">
+                                Likes (<i class="fas fa-arrow-down"></i>)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="order_by" id="order-by-radio4"
+                                   value="likes_asc" {% if order_by == 'likes_asc' %}checked{% endif %}>
+                            <label class="form-check-label" for="order-by-radio4">
+                                Likes (<i class="fas fa-arrow-up"></i>)
+                            </label>
+                        </div>
+                        <hr/>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
