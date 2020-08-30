@@ -51,7 +51,7 @@ def browse():
 
     graphs = graphs.paginate(page=page, per_page=5)
 
-    tags = Tag.query.with_entities(Tag.text).order_by(Tag.text.asc()).all()
+    tags = Tag.query.with_entities(Tag.text).distinct(Tag.text).order_by(Tag.text.asc()).all()
 
     users = User.query.with_entities(User.id, User.username).order_by(User.username.asc()).all()
 
