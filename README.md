@@ -1,4 +1,4 @@
-# GRAPH-hub
+# GRAPH hub
 ## About
 GRAPH-hub allows you to browse variety of GRAPH-moment projects created by other users. 
 
