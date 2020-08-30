@@ -106,6 +106,7 @@ def delete_graph(graph_id):
     if graph.author != current_user:
         abort(403)
     db.session.query(Comment).filter_by(graph_id=graph.id).delete()
+    db.session.query(Like).filter_by(graph_id=graph.id).delete()
     db.session.delete(graph)
     db.session.commit()
     flash('Your graph has been deleted!', 'success')
