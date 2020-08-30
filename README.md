@@ -1,8 +1,6 @@
 # GRAPH-hub
 ## About
 GRAPH-hub allows you to browse variety of GRAPH-moment projects created by other users. 
-After registration you can upload your own projects and share them with others. 
-Users can comment and like projects as well as search them by tags or authors.
 
 <kbd>
     <img src="img/scr.png">
